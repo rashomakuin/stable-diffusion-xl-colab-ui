@@ -1,3 +1,6 @@
+import gc        # ← NUEVO
+import torch     # ← NUEVO
+
 from StableDiffusionXLColabUI.UI.mask_canvas import MaskCanvas
 from IPython.display import display, clear_output
 import ipywidgets as widgets
@@ -27,6 +30,18 @@ def generate(args, instances):
 # Plugging the inputted image into the canvas
 def create_mask(mask, colab_ui):
     try:
+        # --- LIMPIEZA PREVIA (parche) ---
+        for attr in ("image", "img", "_image", "original_image", "mask_image"):
+            if hasattr(mask, attr):
+                try:
+                    setattr(mask, attr, None)
+                except Exception:
+                    pass
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
+        # --- FIN LIMPIEZA ---
         image = Image.open(colab_ui.inpaint.inpainting_image_dropdown.value)
         mask.create(image)
         colab_ui.draw = True
