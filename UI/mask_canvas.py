@@ -126,6 +126,29 @@ class MaskCanvas:
 
         self.enable_button()
 
+    def reset(self):
+        """Limpia completamente el estado del canvas antes de cargar una nueva imagen."""
+        # 1. Resetear estado de dibujo
+        self.draw = False
+        self.collected_points = []
+        self.collected_brushes = []
+    
+        # 2. Limpiar todas las capas del canvas
+        for layer in self.canvas:
+            layer.clear()
+    
+        # 3. Resetear sync flags por si quedaron en True
+        try:
+            self.foreground.sync_image_data = False
+            self.background.sync_image_data = False
+            self.blocking.sync_image_data = False
+            self.brush_preview.sync_image_data = False
+        except Exception:
+            pass
+    
+        # 4. Quitar preview si estaba visible
+        self.mask_ui.children = [self.canvas_settings]
+    
     # Stylize the canvas
     def canvas_setup(self, image):
         img_widget = widgets.Image(
@@ -143,27 +166,31 @@ class MaskCanvas:
         
     # Create a new instance
     def create(self, img):
+        # ✅ Limpiar todo ANTES de cargar la nueva imagen
+        self.reset()
+    
         self.image = img
         self.width, self.height = img.size
         self.draw = False
-        
+    
         self.width_to_max = 1
         if self.width != 256:
             self.width_to_max = self.width / 256
             width_factor = self.width_to_max**(-1)
             self.image = self.image.resize((256, int(self.height*width_factor)))
-
+    
         self.canvas_width, self.canvas_height = self.image.size
         self.canvas.width = self.canvas_width
         self.canvas.height = self.canvas_height
-
+    
         self.background = self.canvas[0]
         self.blocking = self.canvas[1]
         self.foreground = self.canvas[2]
         self.brush_preview = self.canvas[3]
-
+    
         self.canvas_setup(self.image)
-
+    
+        # ⚠️ Reconectar handlers (por si reset() los perdió)
         self.brush_preview.on_mouse_down(self.foreground_on_down)
         self.brush_preview.on_mouse_move(self.foreground_on_move)
         self.brush_preview.on_mouse_up(self.foreground_on_release)
