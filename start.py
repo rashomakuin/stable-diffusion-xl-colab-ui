@@ -43,8 +43,7 @@ def create_mask(mask, colab_ui):
             torch.cuda.ipc_collect()
         # --- FIN LIMPIEZA ---
         image = Image.open(colab_ui.inpaint.inpainting_image_dropdown.value)
-        
-        # FIX: aceptar cualquier modo de imagen
+
         if image.mode != "RGB":
             if image.mode == "RGBA":
                 fondo = Image.new("RGB", image.size, (255, 255, 255))
@@ -52,7 +51,10 @@ def create_mask(mask, colab_ui):
                 image = fondo
             else:
                 image = image.convert("RGB")
-        
+
+        # ✅ Resetear canvas antes de cargar la nueva imagen
+        mask.reset()
+
         mask.create(image)
         colab_ui.draw = True
         colab_ui.reset_generate.submit_button_widget.disabled = True
