@@ -91,13 +91,9 @@ class MaskCanvas:
     # Convert PIL images into bytes
     def buffer(self, image):
         # Acepta cualquier modo (RGBA, LA, P, CMYK, etc.) convirtiéndolo a RGB
+        # Acepta cualquier modo (RGBA, LA, P, CMYK, etc.) convirtiéndolo a RGB
         if image.mode != "RGB":
-            if image.mode == "RGBA":
-                fondo = Image.new("RGB", image.size, (255, 255, 255))
-                fondo.paste(image, mask=image.split()[3])
-                image = fondo
-            else:
-                image = image.convert("RGB")
+            image = image.convert("RGB")
     
         buffer = BytesIO()
         with buffer:
