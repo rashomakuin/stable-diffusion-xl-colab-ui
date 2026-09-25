@@ -167,15 +167,20 @@ def run(values_in_list, lora, embeddings, ip, hf_token, civit_token, ui, seed_li
             inpaint_image = inpaint_check(Inpainting_Image)
             mask_image = inpaint_check(Mask_Image)
             if inpaint_image and mask_image:
-                display(make_image_grid([inpaint_image, mask_image], rows=1, cols=2))
-                pipeline_type = "inpaint"
-                active_inpaint = True
+                    display(make_image_grid([inpaint_image, mask_image], rows=1, cols=2))
+                    pipeline_type = "inpaint"
+                    active_inpaint = True
+                    
+                    # Forzar versión RGB al disco para que el pipeline no asuma que es un tensor latente
+                    clean_inpaint = load_image(Inpainting_Image).convert("RGB")
+                    clean_inpaint.save("/content/clean_inpaint.png")
+                    Inpainting_Image = "/content/clean_inpaint.png"
             else:
                 print("Skipped Inpainting.")
                 
 
     if Reference_Image and selected_tab_for_pipeline == 1:
-        ref_image = load_image(Reference_Image)
+        ref_image = load_image(Reference_Image).convert("RGB")
         if ref_image or os.path.exists(ref_image):
             pipeline_type = "img2img"
     else:
