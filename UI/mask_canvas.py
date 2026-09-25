@@ -170,10 +170,10 @@ class MaskCanvas:
         self.draw = False
     
         self.width_to_max = 1
-        if self.width != 256:
-            self.width_to_max = self.width / 256
+        if self.width != 512:
+            self.width_to_max = self.width / 512
             width_factor = self.width_to_max**(-1)
-            self.image = self.image.resize((256, int(self.height*width_factor)))
+            self.image = self.image.resize((512, int(self.height*width_factor)))
     
         self.canvas_width, self.canvas_height = self.image.size
         self.canvas.width = self.canvas_width
@@ -210,7 +210,7 @@ class MaskCanvas:
     def __init__(self):
         self.collected_points = []
         self.collected_brushes = []
-        self.canvas = MultiCanvas(4, width=256, height=256)
+        self.canvas = MultiCanvas(4, width=512, height=512)
 
         self.preview_label = widgets.Label(value="Is this correct? Try to click the save button again if it's incorrect.")
         self.preview = widgets.Image()
