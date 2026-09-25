@@ -129,6 +129,16 @@ def run(values_in_list, lora, embeddings, ip, hf_token, civit_token, ui, seed_li
 
     Inpainting_Image = values_in_list[15] if pipeline_type == "inpaint" else None
     Mask_Image = values_in_list[16] if pipeline_type == "inpaint" else None
+    # --- PARCHE PARA OBLIGAR A COMPRIMIR RGBA ---
+    if Inpainting_Image and Mask_Image and pipeline_type == "inpaint":
+        base = load_image(Inpainting_Image).convert("RGB")
+        base.save("/content/safe_base.png")
+        Inpainting_Image = "/content/safe_base.png"
+        
+        mask = load_image(Mask_Image).convert("L")
+        mask.save("/content/safe_mask.png")
+        Mask_Image = "/content/safe_mask.png"
+    # --------------------------------------------
     Inpainting = values_in_list[17] if pipeline_type == "inpaint" else None
     Inpainting_Strength = values_in_list[18] if pipeline_type == "inpaint" else None
 
