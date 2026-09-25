@@ -312,7 +312,16 @@ def run(values_in_list, lora, embeddings, ip, hf_token, civit_token, ui, seed_li
             IP_Image_Link,
             IP_Adapter_Strength,
         )
+    if pipeline_type == "inpaint" and Inpainting_Image and Mask_Image:
+        # Forzar la imagen base a RGB y al tamaño exacto de generación
+        clean_img = load_image(Inpainting_Image).convert("RGB").resize((Width, Height))
+        clean_img.save("/content/clean_inpaint_base.png")
+        Inpainting_Image = "/content/clean_inpaint_base.png"
         
+        # Forzar la máscara a RGB y al tamaño exacto de generación
+        clean_mask = load_image(Mask_Image).convert("RGB").resize((Width, Height))
+        clean_mask.save("/content/clean_inpaint_mask.png")
+        Mask_Image = "/content/clean_inpaint_mask.png"        
     # Generating image
     prefix, image, gen_args = run_generation.generate(
         used_pipeline,
