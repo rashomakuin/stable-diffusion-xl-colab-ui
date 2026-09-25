@@ -39,7 +39,7 @@ class MainVar:
 def inpaint_check(img):
     if img:
         try:
-            image = load_image(img).resize((1024,1024))
+            image = load_image(img).convert("RGB").resize((1024,1024))
             return image
         except Exception as e:
             print(f"Unable to load {value}. Reason: {e}")
