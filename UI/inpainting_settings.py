@@ -148,8 +148,8 @@ class InpaintingSettings:
         
         self.model_widget = widgets.Text(value=cfg[2] if cfg else "", placeholder="HF's repository or direct URL")
 
-        self.width_slider = widgets.IntSlider(min=512, max=1536, step=64, value=cfg[3] if cfg else 1024, description="Width")
-        self.height_slider = widgets.IntSlider(min=512, max=1536, step=64, value=cfg[4] if cfg else 1024, description="Height")
+        self.width_slider = widgets.IntSlider(min=512, max=1024, step=64, value=cfg[3] if cfg else 1024, description="Width")
+        self.height_slider = widgets.IntSlider(min=512, max=1024, step=64, value=cfg[4] if cfg else 1024, description="Height")
         self.image_resolution_section = widgets.HBox([self.width_slider, self.height_slider])
 
         self.batch_size = widgets.IntText(value=cfg[19] if cfg else 1, description="Batch size")
